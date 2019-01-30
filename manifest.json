@@ -1,7 +1,7 @@
 {
   "name": "CopyURL",
   "description": "Copy current URL on extension click and send URLs to webhooks.",
-  "version": "1.0",
+  "version": "1.0.1",
   "background": {
     "scripts": ["copyurl-extension.js"],
     "persistent": true

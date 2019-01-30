@@ -32,10 +32,12 @@ const meta = {
   shareMethodDefault: "POST",
   shareUrlDefault: "",
   shareContentMaxLengthDefault: 1024,
-  shareContent: "{\"content\":\"%jsonEscapedData\"}",
+  shareContent: "{\"content\":\"%%jsonEscapedInfo %jsonEscapedData\"}",
   shareContentType: "application/json",
+  shareBlocked: "URL is not allowed to be shared.",
   editShareText: "✏ Edit Share Data",
   stopEditingShareText: "✏ Stop Editing Share Data",
+  infoMD: "[ℹ](https://sqaaakoi.github.io/CopyURL/info)"
 };
 
 // Code below: Please only edit if you understand what you are doing.
@@ -49,6 +51,7 @@ function copy(text) {
   document.execCommand("copy");
   textbox.blur();
   document.body.removeChild(textbox);
+  textbox.remove();
 };
 
 function copyURL(tab) {
@@ -156,7 +159,7 @@ function context(info, tab) {
           if (url === null || url === "") return;
           let method = prompt("Method for share requests.", sendData.share[pos].method);
           if (method === null || method === "") return;
-          let data = prompt("Data for share requests. Use %data to replace with url + comment. \nIf using JSON, replace \"%\" with \"%jsonEscaped\". Capitalize the next letter after that or it won't work. \n%data = URL and comment \n%title = Title of page \n%favicon = Favicon URL", sendData.share[pos].data);
+          let data = prompt("Data for share requests. Use %data to replace with url + comment. \nIf using JSON, replace \"%\" with \"%jsonEscaped\". Capitalize the next letter after that or it won't work. \n%info = Markdown info button \n%data = URL and comment \n%title = Title of page \n%favicon = Favicon URL", sendData.share[pos].data);
           if (data === null || data === "") return;
           let ct = prompt("Content-Type for share requests.", sendData.share[pos].content_type);
           if (ct === null || ct === "") return;
@@ -189,22 +192,28 @@ function context(info, tab) {
             };
           });
         };
+        if (!allow) {
+          alert(meta.shareBlocked.replace("%url", tab.url));
+          return;
+        }
         let comment = prompt(meta.shareCommentPrompt.replace("%url", tab.url));
         if (comment === null) return;
         let escapeJSON = (j) => {
           let o = j.replace("\\", "\\\\").replace("\b", "\\b").replace("\t", "\\t").replace("\n", "\\n").replace("\f", "\\f").replace("\r", "\\r").replace("\"", "\\\"");
           return o;
         }
-        let text = (tab.url + " " + comment).split("").slice(0, parseInt(sendData.share[pos].length, 10)).join("");
-        let jsonescaped = escapeJSON(text).split("").slice(0, parseInt(sendData.share[pos].length, 10)).join("");
-        let jsontitle = escapeJSON(tab.title).split("").slice(0, parseInt(sendData.share[pos].length, 10)).join("");
-        let jsonfavicon = escapeJSON(tab.faviconUrl ? tab.faviconUrl : "").split("").slice(0, parseInt(sendData.share[pos].length, 10)).join("");
+        let text = (tab.url + " " + comment);
+        let jsoninfo = escapeJSON(meta.infoMD);
+        let jsonescaped = escapeJSON(text);
+        let jsontitle = escapeJSON(tab.title).split("");
+        let jsonfavicon = escapeJSON(tab.faviconUrl ? tab.faviconUrl : "");
+        let send_data = sendData.share[pos].data.replace("%jsonEscapedInfo", jsoninfo).replace("%jsonEscapedData", jsonescaped).replace("%jsonEscapedTitle", jsontitle).replace("%jsonEscapedFavicon", jsonfavicon).replace("%info", meta.infoMD).replace("%data", text).replace("%title", tab.title).replace("%favicon", tab.faviconUrl ? tab.faviconUrl : "").split("").slice(0, parseInt(sendData.share[pos].length, 10)).join("");
         var settings = {
           "async": true,
           "url": sendData.share[pos].url,
           "Content_Type": sendData.share[pos].content_type,
           "method": sendData.share[pos].method,
-          "data": sendData.share[pos].data.replace("%jsonEscapedData", jsonescaped).replace("%jsonEscapedTitle", jsontitle).replace("%jsonEscapedFavicon", jsonfavicon).replace("%data", text).replace("%title", tab.title).replace("%favicon", tab.faviconUrl ? tab.faviconUrl : "")
+          "data": send_data
         };
         var xhrreq = new XMLHttpRequest();
         xhrreq.open(settings.method, settings.url, settings.async);
