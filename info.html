@@ -16,11 +16,31 @@
       a {
         color: #40d4e8;
         text-align: center;
+        .quoteThis {
+          color: #21c1d3;
+          text-align: center;
+        }
       }
     </style>
+    <script>
+      function addThisPage() {
+        let quote = "";
+        let textbox = document.createElement("textarea");
+        textbox.style.opacity = 0;
+        textbox.value = quote;
+        document.body.appendChild(textbox);
+        textbox.select();
+        document.execCommand("copy");
+        textbox.blur();
+        document.body.removeChild(textbox);
+        textbox.remove();
+        alert("Copied info button to clipboard. Paste at the start of the content of your webhook. Must support Markdown.");
+      }
+    </script>
   </head>
   <body>
     <h1>ℹ CopyURL Info</h1>
     <p>You've probably clicked on an info button to get here. That message or post was sent by the CopyURL share feature. For more info, go to <a href="https://github.com/Sqaaakoi/CopyURL/">CopyURL on GitHub</a></p>
+    <a href="javascript:addThisPage()" class="quoteThis">Add an info button to your CopyURL webhooks!</a>
   </body>
 </html>
