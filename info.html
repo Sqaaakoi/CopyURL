@@ -1,6 +1,7 @@
 <!DOCTYPE html>
   <head>
     <title>CopyURL Info</title>
+    <meta name="icon" content="https://raw.githubusercontent.com/Sqaaakoi/CopyURL/master/icons/Copy.png">
     <style>
       html {
         background-color: #093de8;
@@ -24,17 +25,7 @@
     </style>
     <script>
       function addThisPage() {
-        let quote = "";
-        let textbox = document.createElement("textarea");
-        textbox.style.opacity = 0;
-        textbox.value = quote;
-        document.body.appendChild(textbox);
-        textbox.select();
-        document.execCommand("copy");
-        textbox.blur();
-        document.body.removeChild(textbox);
-        textbox.remove();
-        alert("Copied info button to clipboard. Paste at the start of the content of your webhook. Must support Markdown.");
+        alert("Add %info to the start of the webhook content. Webhook service must support Markdown.");
       }
     </script>
   </head>
