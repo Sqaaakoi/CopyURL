@@ -1,0 +1,17 @@
+{
+  "name": "CopyURL",
+  "description": "Copy current URL on extension click and send URLs to webhooks.",
+  "version": "1.0",
+  "background": {
+    "scripts": ["copyurl-extension.js"],
+    "persistent": true
+  },
+  "permissions": ["tabs", "clipboardWrite", "notifications", "contextMenus", "storage"],
+  "browser_action": {
+    "name": ""
+  },
+  "icons": {
+    "128": "icons/Copy.png"
+  },
+  "manifest_version": 2
+}
